@@ -7,15 +7,18 @@ StudentEditDialogPresenter::StudentEditDialogPresenter(IStudentEditDialogView &v
                                                        Application::GetAllSubjectsHandler &getAllSubjectsHandler)
     : m_view(view)
     , m_getAllSubjects(getAllSubjectsHandler)
+    , m_album(student.albumNumber)
+    , m_firstName(student.firstName)
+    , m_lastName(student.lastName)
     , m_subjects(student.subjects)
 {
-    m_view.setAlbum(student.albumNumber);
-    m_view.setFirstName(student.firstName);
-    m_view.setLastName(student.lastName);
 }
 
 void StudentEditDialogPresenter::initialize()
 {
+    m_view.setAlbum(m_album);
+    m_view.setFirstName(m_firstName);
+    m_view.setLastName(m_lastName);
     rebuildList();
 }
 

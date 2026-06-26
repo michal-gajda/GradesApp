@@ -59,6 +59,9 @@ private:
 
     IStudentEditDialogView &m_view;
     Application::GetAllSubjectsHandler &m_getAllSubjects;
+    QString m_album;
+    QString m_firstName;
+    QString m_lastName;
     QVector<Application::SubjectGradeDto> m_subjects;
 };
 
