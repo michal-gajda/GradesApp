@@ -65,7 +65,18 @@ QString SubjectManagerDialog::askText(const QString &title,
                                       const QString &defaultValue,
                                       bool &ok)
 {
-    return QInputDialog::getText(this, title, label, QLineEdit::Normal, defaultValue, &ok);
+    QInputDialog dialog(this);
+    dialog.setWindowTitle(title);
+    dialog.setLabelText(label);
+    dialog.setTextEchoMode(QLineEdit::Normal);
+    dialog.setTextValue(defaultValue);
+
+    // Keep a sane minimum size on Windows to avoid geometry clamp warnings.
+    const QSize minSize = dialog.minimumSizeHint().expandedTo(QSize(260, 120));
+    dialog.resize(minSize);
+
+    ok = (dialog.exec() == QDialog::Accepted);
+    return ok ? dialog.textValue() : QString();
 }
 
 bool SubjectManagerDialog::confirm(const QString &title, const QString &message)

@@ -158,7 +158,18 @@ QString StudentEditDialog::askItem(const QString &title,
                                    const QStringList &items,
                                    bool &ok)
 {
-    return QInputDialog::getItem(this, title, label, items, 0, false, &ok);
+    QInputDialog dialog(this);
+    dialog.setWindowTitle(title);
+    dialog.setLabelText(label);
+    dialog.setComboBoxItems(items);
+    dialog.setComboBoxEditable(false);
+
+    // Keep a sane minimum size on Windows to avoid geometry clamp warnings.
+    const QSize minSize = dialog.minimumSizeHint().expandedTo(QSize(260, 120));
+    dialog.resize(minSize);
+
+    ok = (dialog.exec() == QDialog::Accepted);
+    return ok ? dialog.textValue() : QString();
 }
 
 void StudentEditDialog::acceptDialog()
