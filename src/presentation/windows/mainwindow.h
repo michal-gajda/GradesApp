@@ -10,6 +10,7 @@
 #include "application/handlers/getallstudentshandler.h"
 #include "application/handlers/getallsubjectshandler.h"
 #include "presentation/models/studenttablemodel.h"
+#include "presentation/presenters/mainwindowpresenter.h"
 #include <QMainWindow>
 #include <QLabel>
 
@@ -17,7 +18,7 @@ namespace Ui { class MainWindow; }
 
 namespace Presentation {
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public IMainWindowView
 {
     Q_OBJECT
 
@@ -42,23 +43,29 @@ private slots:
 private:
     Ui::MainWindow *m_ui;
 
-    Application::AddStudentHandler &m_addStudent;
-    Application::RemoveStudentHandler &m_removeStudent;
-    Application::EditStudentHandler &m_editStudent;
-    Application::AddSubjectHandler &m_addSubject;
-    Application::RemoveSubjectHandler &m_removeSubject;
-    Application::RenameSubjectHandler &m_renameSubject;
-    Application::GetAllStudentsHandler &m_getAllStudents;
-    Application::GetAllSubjectsHandler &m_getAllSubjects;
-
     StudentTableModel *m_model;
     QLabel *m_statusLabel;
+    MainWindowPresenter m_presenter;
+
+    StudentTableModel &tableModel() override;
+    QWidget *asWidget() override;
+    int selectedRow() const override;
+    int sortSection() const override;
+    Qt::SortOrder sortOrder() const override;
+    void setStatusText(const QString &text) override;
+    void showError(const QString &message) override;
+    bool openStudentDialog(StudentFormData &data) override;
+    bool openStudentEditDialog(const Application::StudentDto &student,
+                               Application::GetAllSubjectsHandler &getAllSubjects,
+                               StudentEditResult &result) override;
+    void openSubjectManagerDialog(Application::AddSubjectHandler &addSubject,
+                                  Application::RemoveSubjectHandler &removeSubject,
+                                  Application::RenameSubjectHandler &renameSubject,
+                                  Application::GetAllSubjectsHandler &getAllSubjects,
+                                  const std::function<void()> &onSubjectsChanged) override;
 
     void setupTable();
     void connectSignals();
-    void refreshView();
-    void openEditDialog(int row);
-    int selectedRow() const;
 };
 
 } // namespace Presentation

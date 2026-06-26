@@ -4,40 +4,39 @@
 #include "presentation/dialogs/studenteditdialog.h"
 #include "presentation/dialogs/subjectmanagerdialog.h"
 #include "ui_MainWindow.h"
-#include <algorithm>
+#include <QHeaderView>
 
 namespace Presentation {
 
 MainWindow::MainWindow(Application::AddStudentHandler &addStudent,
-                        Application::RemoveStudentHandler &removeStudent,
-                        Application::EditStudentHandler &editStudent,
-                        Application::AddSubjectHandler &addSubject,
-                        Application::RemoveSubjectHandler &removeSubject,
-                        Application::RenameSubjectHandler &renameSubject,
-                        Application::GetAllStudentsHandler &getAllStudents,
-                        Application::GetAllSubjectsHandler &getAllSubjects,
-                        QWidget *parent)
+                       Application::RemoveStudentHandler &removeStudent,
+                       Application::EditStudentHandler &editStudent,
+                       Application::AddSubjectHandler &addSubject,
+                       Application::RemoveSubjectHandler &removeSubject,
+                       Application::RenameSubjectHandler &renameSubject,
+                       Application::GetAllStudentsHandler &getAllStudents,
+                       Application::GetAllSubjectsHandler &getAllSubjects,
+                       QWidget *parent)
     : QMainWindow(parent)
     , m_ui(new Ui::MainWindow)
-    , m_addStudent(addStudent)
-    , m_removeStudent(removeStudent)
-    , m_editStudent(editStudent)
-    , m_addSubject(addSubject)
-    , m_removeSubject(removeSubject)
-    , m_renameSubject(renameSubject)
-    , m_getAllStudents(getAllStudents)
-    , m_getAllSubjects(getAllSubjects)
+    , m_model(new StudentTableModel(this))
+    , m_statusLabel(new QLabel(this))
+    , m_presenter(*this,
+                  addStudent,
+                  removeStudent,
+                  editStudent,
+                  addSubject,
+                  removeSubject,
+                  renameSubject,
+                  getAllStudents,
+                  getAllSubjects)
 {
     m_ui->setupUi(this);
-
-    m_model = new StudentTableModel(this);
-
-    m_statusLabel = new QLabel(this);
     m_ui->statusBar->addWidget(m_statusLabel);
 
     setupTable();
     connectSignals();
-    refreshView();
+    m_presenter.initialize();
 }
 
 MainWindow::~MainWindow() { delete m_ui; }
@@ -46,6 +45,7 @@ void MainWindow::setupTable()
 {
     m_ui->tableView->setModel(m_model);
     m_ui->tableView->setSortingEnabled(true);
+    m_ui->tableView->horizontalHeader()->setStretchLastSection(true);
 }
 
 void MainWindow::connectSignals()
@@ -63,91 +63,32 @@ void MainWindow::connectSignals()
 
 void MainWindow::onManageSubjects()
 {
-    SubjectManagerDialog dlg(m_addSubject, m_removeSubject, m_renameSubject, m_getAllSubjects, this);
-    connect(&dlg, &SubjectManagerDialog::subjectsChanged, this, &MainWindow::refreshView);
-    dlg.exec();
+    m_presenter.onManageSubjectsClicked();
 }
 
 void MainWindow::onAddStudent()
 {
-    StudentDialog dlg(this);
-    if (dlg.exec() != QDialog::Accepted) return;
-
-    auto data = dlg.formData();
-    try
-    {
-        m_addStudent.handle({data.firstName, data.lastName, data.albumNumber});
-        refreshView();
-    }
-    catch (const std::exception &e)
-    {
-            QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
-    }
+    m_presenter.onAddStudentClicked();
 }
 
 void MainWindow::onRowDoubleClicked(const QModelIndex &index)
 {
-    if (index.isValid()) openEditDialog(index.row());
+    m_presenter.onRowDoubleClicked(index);
 }
 
 void MainWindow::onSelectionChanged()
 {
-    int row = selectedRow();
-
-    if (row < 0) {
-        m_statusLabel->setText(QString("Students: %1").arg(m_model->rowCount()));
-        return;
-    }
-
-    const auto &s = m_model->studentAt(row);
-    double rate = m_model->passRateAt(row);
-
-    if (rate < 0.0){
-        m_statusLabel->setText(QString("%1 %2 - no subjects").arg(s.firstName, s.lastName));
-    } else {
-            int passed = static_cast<int>(std::count_if(
-            s.subjects.begin(),
-            s.subjects.end(),
-            [](const Application::SubjectGradeDto &subject) { return subject.passed; }));
-        int pct = static_cast<int>(rate * 100.0);
-        m_statusLabel->setText(
-            QString("%1 %2 | Passed: %3 / %4 (%5%)")
-                .arg(s.firstName, s.lastName,
-                    QString::number(passed),
-                    QString::number(s.subjects.size()),
-                    QString::number(pct)));
-    }
+    m_presenter.onSelectionChanged();
 }
 
-void MainWindow::openEditDialog(int row)
+StudentTableModel &MainWindow::tableModel()
 {
-    const auto &dto = m_model->studentAt(row);
-    StudentEditDialog dlg(dto, m_getAllSubjects, this);
-
-    if (dlg.exec() != QDialog::Accepted) {
-        return;
-    }
-
-    auto res = dlg.result();
-
-    try {
-            m_editStudent.handle({dto.albumNumber, res.firstName, res.lastName, res.subjects});
-
-        refreshView();
-    } catch (const std::exception &e) {
-        QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
-    }
+    return *m_model;
 }
 
-void MainWindow::refreshView()
+QWidget *MainWindow::asWidget()
 {
-    auto students = m_getAllStudents.handle({});
-    m_model->reset(students);
-
-    auto *hh = m_ui->tableView->horizontalHeader();
-    m_model->sort(hh->sortIndicatorSection(), hh->sortIndicatorOrder());
-
-    m_statusLabel->setText(QString("Students: %1").arg(students.size()));
+    return this;
 }
 
 int MainWindow::selectedRow() const
@@ -155,6 +96,59 @@ int MainWindow::selectedRow() const
     auto sel = m_ui->tableView->selectionModel()->selectedRows();
 
     return sel.isEmpty() ? -1 : sel.first().row();
+}
+
+int MainWindow::sortSection() const
+{
+    return m_ui->tableView->horizontalHeader()->sortIndicatorSection();
+}
+
+Qt::SortOrder MainWindow::sortOrder() const
+{
+    return m_ui->tableView->horizontalHeader()->sortIndicatorOrder();
+}
+
+void MainWindow::setStatusText(const QString &text)
+{
+    m_statusLabel->setText(text);
+}
+
+void MainWindow::showError(const QString &message)
+{
+    QMessageBox::critical(this, "Error", message);
+}
+
+bool MainWindow::openStudentDialog(StudentFormData &formData)
+{
+    StudentDialog dlg(this);
+    if (dlg.exec() != QDialog::Accepted) {
+        return false;
+    }
+    formData = dlg.formData();
+    return true;
+}
+
+bool MainWindow::openStudentEditDialog(const Application::StudentDto &student,
+                                       Application::GetAllSubjectsHandler &getAllSubjects,
+                                       StudentEditResult &result)
+{
+    StudentEditDialog dlg(student, getAllSubjects, this);
+    if (dlg.exec() != QDialog::Accepted) {
+        return false;
+    }
+    result = dlg.result();
+    return true;
+}
+
+void MainWindow::openSubjectManagerDialog(Application::AddSubjectHandler &addSubject,
+                                          Application::RemoveSubjectHandler &removeSubject,
+                                          Application::RenameSubjectHandler &renameSubject,
+                                          Application::GetAllSubjectsHandler &getAllSubjects,
+                                          const std::function<void()> &onSubjectsChanged)
+{
+    SubjectManagerDialog dlg(addSubject, removeSubject, renameSubject, getAllSubjects, this);
+    connect(&dlg, &SubjectManagerDialog::subjectsChanged, this, [onSubjectsChanged]() { onSubjectsChanged(); });
+    dlg.exec();
 }
 
 } // namespace Presentation

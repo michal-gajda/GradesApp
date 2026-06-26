@@ -7,12 +7,11 @@
 namespace Presentation {
 
 StudentEditDialog::StudentEditDialog(const Application::StudentDto &student,
-                                        Application::GetAllSubjectsHandler &getAllSubjectsHandler,
-                                        QWidget *parent)
+                                     Application::GetAllSubjectsHandler &getAllSubjectsHandler,
+                                     QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui::StudentEditDialog)
-    , m_getAllSubjects(getAllSubjectsHandler)
-    , m_subjects(student.subjects)
+    , m_presenter(*this, student, getAllSubjectsHandler)
 {
     m_ui->setupUi(this);
     setWindowFlag(Qt::CustomizeWindowHint, true);
@@ -25,11 +24,7 @@ StudentEditDialog::StudentEditDialog(const Application::StudentDto &student,
     setWindowFlag(Qt::MSWindowsFixedSizeDialogHint, true);
     setFixedSize(size());
 
-    m_ui->lineEditAlbum->setText(student.albumNumber);
-    m_ui->lineEditFirstName->setText(student.firstName);
-    m_ui->lineEditLastName->setText(student.lastName);
-
-    rebuildList();
+    m_presenter.initialize();
 
     connect(m_ui->buttonAddSubject, &QPushButton::clicked, this, &StudentEditDialog::onAddSubject);
     connect(m_ui->buttonRemoveSubject,
@@ -46,113 +41,129 @@ StudentEditDialog::~StudentEditDialog()
 
 StudentEditResult StudentEditDialog::result() const
 {
-    return {m_ui->lineEditFirstName->text().trimmed(),
-            m_ui->lineEditLastName->text().trimmed(),
-            m_subjects};
+    return {firstName().trimmed(),
+            lastName().trimmed(),
+            m_presenter.subjects()};
 }
 
 void StudentEditDialog::onAddSubject()
 {
-    const auto catalog = m_getAllSubjects.handle({});
-    if (catalog.isEmpty()) {
-        QMessageBox::information(this, "No subjects", "Subject catalog is empty. Add subjects in Manage subjects first.");
-        return;
-    }
-
-    QStringList available;
-    for (const auto &catalogSubject : catalog) {
-        bool alreadyAssigned = false;
-        for (const auto &assignedSubject : m_subjects) {
-            if (assignedSubject.name.compare(catalogSubject.name, Qt::CaseInsensitive) == 0) {
-                alreadyAssigned = true;
-                break;
-            }
-        }
-        if (!alreadyAssigned) {
-            available.append(catalogSubject.name);
-        }
-    }
-
-    if (available.isEmpty()) {
-        QMessageBox::information(this, "No subjects", "All catalog subjects are already assigned to this student.");
-        return;
-    }
-
-    bool ok = false;
-    QString selected = QInputDialog::getItem(this,
-                                                "Assign subject",
-                                                "Subject:",
-                                                available,
-                                                0,
-                                                false,
-                                                &ok);
-    if (!ok || selected.trimmed().isEmpty()) {
-        return;
-    }
-
-    syncSubjectsFromList();
-    m_subjects.append({selected.trimmed(), false});
-    rebuildList();
+    m_presenter.onAddSubjectClicked();
 }
 
 void StudentEditDialog::onRemoveSubject()
 {
-    int row = m_ui->listSubjects->currentRow();
-
-    if (row < 0) {
-        QMessageBox::information(this, "Remove subject", "Select a subject from the list.");
-
-        return;
-    }
-
-    QString name = m_ui->listSubjects->item(row)->text().trimmed();
-    auto ans = QMessageBox::question(this,
-                                        "Remove subject",
-                                        QString("Remove \"%1\" from this student?").arg(name),
-                                        QMessageBox::Yes | QMessageBox::No);
-
-    if (ans != QMessageBox::Yes) {
-        return;
-    }
-
-    syncSubjectsFromList();
-    m_subjects.removeAt(row);
-    rebuildList();
+    m_presenter.onRemoveSubjectClicked();
 }
 
 void StudentEditDialog::onOk()
 {
-    if (m_ui->lineEditFirstName->text().trimmed().isEmpty()
-        || m_ui->lineEditLastName->text().trimmed().isEmpty()) {
-        QMessageBox::warning(this, "Error", "First and last name are required.");
-
-        return;
-    }
-
-    syncSubjectsFromList();
-    accept();
+    m_presenter.onOkClicked();
 }
 
-void StudentEditDialog::rebuildList()
+void StudentEditDialog::setAlbum(const QString &value)
+{
+    m_ui->lineEditAlbum->setText(value);
+}
+
+void StudentEditDialog::setFirstName(const QString &value)
+{
+    m_ui->lineEditFirstName->setText(value);
+}
+
+void StudentEditDialog::setLastName(const QString &value)
+{
+    m_ui->lineEditLastName->setText(value);
+}
+
+QString StudentEditDialog::firstName() const
+{
+    return m_ui->lineEditFirstName->text();
+}
+
+QString StudentEditDialog::lastName() const
+{
+    return m_ui->lineEditLastName->text();
+}
+
+void StudentEditDialog::clearSubjectsList()
 {
     m_ui->listSubjects->clear();
-
-    for (int i = 0; i < m_subjects.size(); ++i) {
-        auto *item = new QListWidgetItem(m_subjects[i].name.trimmed(), m_ui->listSubjects);
-        item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
-        item->setCheckState(m_subjects[i].passed ? Qt::Checked : Qt::Unchecked);
-    }
 }
 
-void StudentEditDialog::syncSubjectsFromList()
+void StudentEditDialog::addSubjectToList(const QString &name, bool passed)
 {
-    m_subjects.resize(m_ui->listSubjects->count());
+    auto *item = new QListWidgetItem(name.trimmed(), m_ui->listSubjects);
+    item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+    item->setCheckState(passed ? Qt::Checked : Qt::Unchecked);
+}
 
-    for (int i = 0; i < m_ui->listSubjects->count(); ++i) {
-        auto *item = m_ui->listSubjects->item(i);
-        m_subjects[i].name = item->text().trimmed();
-        m_subjects[i].passed = (item->checkState() == Qt::Checked);
+int StudentEditDialog::selectedSubjectRow() const
+{
+    return m_ui->listSubjects->currentRow();
+}
+
+QString StudentEditDialog::selectedSubjectName() const
+{
+    const int row = m_ui->listSubjects->currentRow();
+    if (row < 0 || row >= m_ui->listSubjects->count()) {
+        return {};
     }
+    return m_ui->listSubjects->item(row)->text();
+}
+
+int StudentEditDialog::subjectsCount() const
+{
+    return m_ui->listSubjects->count();
+}
+
+QString StudentEditDialog::subjectNameAt(int index) const
+{
+    if (index < 0 || index >= m_ui->listSubjects->count()) {
+        return {};
+    }
+    return m_ui->listSubjects->item(index)->text();
+}
+
+bool StudentEditDialog::subjectPassedAt(int index) const
+{
+    if (index < 0 || index >= m_ui->listSubjects->count()) {
+        return false;
+    }
+    return m_ui->listSubjects->item(index)->checkState() == Qt::Checked;
+}
+
+void StudentEditDialog::showInfo(const QString &title, const QString &message)
+{
+    QMessageBox::information(this, title, message);
+}
+
+void StudentEditDialog::showWarning(const QString &title, const QString &message)
+{
+    QMessageBox::warning(this, title, message);
+}
+
+void StudentEditDialog::showError(const QString &title, const QString &message)
+{
+    QMessageBox::critical(this, title, message);
+}
+
+bool StudentEditDialog::confirm(const QString &title, const QString &message)
+{
+    return QMessageBox::question(this, title, message, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes;
+}
+
+QString StudentEditDialog::askItem(const QString &title,
+                                   const QString &label,
+                                   const QStringList &items,
+                                   bool &ok)
+{
+    return QInputDialog::getItem(this, title, label, items, 0, false, &ok);
+}
+
+void StudentEditDialog::acceptDialog()
+{
+    accept();
 }
 
 } // namespace Presentation

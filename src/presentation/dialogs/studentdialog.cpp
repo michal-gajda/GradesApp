@@ -5,7 +5,9 @@
 namespace Presentation {
 
 StudentDialog::StudentDialog(QWidget *parent)
-    : QDialog(parent), m_ui(new Ui::StudentDialog)
+    : QDialog(parent)
+    , m_ui(new Ui::StudentDialog)
+    , m_presenter(*this)
 {
     m_ui->setupUi(this);
     setWindowFlag(Qt::CustomizeWindowHint, true);
@@ -24,21 +26,36 @@ StudentDialog::~StudentDialog() { delete m_ui; }
 
 StudentFormData StudentDialog::formData() const
 {
-    return {m_ui->lineEditAlbum->text().trimmed(),
-            m_ui->lineEditFirstName->text().trimmed(),
-            m_ui->lineEditLastName->text().trimmed()};
+    return {albumNumber(), firstName(), lastName()};
+}
+
+QString StudentDialog::albumNumber() const
+{
+    return m_ui->lineEditAlbum->text().trimmed();
+}
+
+QString StudentDialog::firstName() const
+{
+    return m_ui->lineEditFirstName->text().trimmed();
+}
+
+QString StudentDialog::lastName() const
+{
+    return m_ui->lineEditLastName->text().trimmed();
 }
 
 void StudentDialog::onOk()
 {
-    if (m_ui->lineEditAlbum->text().trimmed().isEmpty()
-        || m_ui->lineEditFirstName->text().trimmed().isEmpty()
-        || m_ui->lineEditLastName->text().trimmed().isEmpty()) {
-        QMessageBox::warning(this, "Error", "All fields are required.");
+    m_presenter.onOkClicked();
+}
 
-        return;
-    }
+void StudentDialog::showWarning(const QString &title, const QString &message)
+{
+    QMessageBox::warning(this, title, message);
+}
 
+void StudentDialog::acceptDialog()
+{
     accept();
 }
 

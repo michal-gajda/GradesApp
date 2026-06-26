@@ -5,13 +5,14 @@
 #include "application/handlers/removesubjecthandler.h"
 #include "application/handlers/renamesubjecthandler.h"
 #include "application/handlers/getallsubjectshandler.h"
+#include "presentation/presenters/subjectmanagerdialogpresenter.h"
 #include <QDialog>
 
 namespace Ui { class SubjectManagerDialog; }
 
 namespace Presentation {
 
-class SubjectManagerDialog : public QDialog
+class SubjectManagerDialog : public QDialog, public ISubjectManagerDialogView
 {
     Q_OBJECT
 
@@ -33,12 +34,19 @@ private slots:
 
 private:
     Ui::SubjectManagerDialog *m_ui;
-    Application::AddSubjectHandler &m_addHandler;
-    Application::RemoveSubjectHandler &m_removeHandler;
-    Application::RenameSubjectHandler &m_renameHandler;
-    Application::GetAllSubjectsHandler &m_getAllHandler;
+    SubjectManagerDialogPresenter m_presenter;
 
-    void refreshList();
+    int currentRow() const override;
+    QString currentName() const override;
+    QString askText(const QString &title,
+                    const QString &label,
+                    const QString &defaultValue,
+                    bool &ok) override;
+    bool confirm(const QString &title, const QString &message) override;
+    void showInfo(const QString &title, const QString &message) override;
+    void showError(const QString &title, const QString &message) override;
+    void setSubjects(const QStringList &names) override;
+    void notifySubjectsChanged() override;
 };
 
 } // namespace Presentation

@@ -1,6 +1,5 @@
 #include "presentation/dialogs/subjectmanagerdialog.h"
 #include "ui_SubjectManagerDialog.h"
-#include "application/commands/addsubjectcommand.h"
 #include <QInputDialog>
 #include <QMessageBox>
 
@@ -13,10 +12,7 @@ SubjectManagerDialog::SubjectManagerDialog(Application::AddSubjectHandler &addHa
                                             QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui::SubjectManagerDialog)
-    , m_addHandler(addHandler)
-    , m_removeHandler(removeHandler)
-    , m_renameHandler(renameHandler)
-    , m_getAllHandler(getAllHandler)
+    , m_presenter(*this, addHandler, removeHandler, renameHandler, getAllHandler)
 {
     m_ui->setupUi(this);
     setWindowFlag(Qt::CustomizeWindowHint, true);
@@ -33,94 +29,71 @@ SubjectManagerDialog::SubjectManagerDialog(Application::AddSubjectHandler &addHa
     connect(m_ui->buttonRemove, &QPushButton::clicked, this, &SubjectManagerDialog::onRemove);
     connect(m_ui->buttonRename, &QPushButton::clicked, this, &SubjectManagerDialog::onRename);
 
-    refreshList();
+    m_presenter.initialize();
 }
 
 SubjectManagerDialog::~SubjectManagerDialog() { delete m_ui; }
 
 void SubjectManagerDialog::onAdd()
 {
-    bool ok = false;
-    QString name = QInputDialog::getText(this, "Add subject", "Name:", QLineEdit::Normal, {}, &ok);
-
-    if (!ok || name.trimmed().isEmpty()) {
-        return;
-    }
-
-    try {
-        m_addHandler.handle({name.trimmed()});
-        refreshList();
-        emit subjectsChanged();
-    } catch (const std::exception &e) {
-        QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
-    }
+    m_presenter.onAddClicked();
 }
 
 void SubjectManagerDialog::onRemove()
 {
-    int row = m_ui->listWidget->currentRow();
-
-    if (row < 0) {
-        QMessageBox::information(this, "Remove", "Select a subject.");
-        return;
-    }
-
-    QString name = m_ui->listWidget->currentItem()->text();
-    auto ans = QMessageBox::question(this,
-                                        "Remove subject",
-                                        QString(
-                                            "Remove \"%1\"? Grades will be removed for all students.")
-                                            .arg(name),
-                                        QMessageBox::Yes | QMessageBox::No);
-    if (ans != QMessageBox::Yes) {
-        return;
-    }
-
-    try {
-        m_removeHandler.handle({row});
-        refreshList();
-        emit subjectsChanged();
-    } catch (const std::exception &e) {
-        QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
-    }
+    m_presenter.onRemoveClicked();
 }
 
 void SubjectManagerDialog::onRename()
 {
-    int row = m_ui->listWidget->currentRow();
+    m_presenter.onRenameClicked();
+}
 
-    if (row < 0) {
-        QMessageBox::information(this, "Rename", "Select a subject.");
-        return;
-    }
+int SubjectManagerDialog::currentRow() const
+{
+    return m_ui->listWidget->currentRow();
+}
 
-    bool ok = false;
-    QString newName = QInputDialog::getText(this,
-                                            "Rename",
-                                            "New name:",
-                                            QLineEdit::Normal,
-                                            m_ui->listWidget->currentItem()->text(),
-                                            &ok);
-    if (!ok || newName.trimmed().isEmpty()) {
-        return;
-    }
+QString SubjectManagerDialog::currentName() const
+{
+    auto *item = m_ui->listWidget->currentItem();
+    return item ? item->text() : QString();
+}
 
-    try {
-        m_renameHandler.handle({row, newName.trimmed()});
-        refreshList();
-        emit subjectsChanged();
-    } catch (const std::exception &e) {
-        QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
+QString SubjectManagerDialog::askText(const QString &title,
+                                      const QString &label,
+                                      const QString &defaultValue,
+                                      bool &ok)
+{
+    return QInputDialog::getText(this, title, label, QLineEdit::Normal, defaultValue, &ok);
+}
+
+bool SubjectManagerDialog::confirm(const QString &title, const QString &message)
+{
+    return QMessageBox::question(this, title, message, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes;
+}
+
+void SubjectManagerDialog::showInfo(const QString &title, const QString &message)
+{
+    QMessageBox::information(this, title, message);
+}
+
+void SubjectManagerDialog::showError(const QString &title, const QString &message)
+{
+    QMessageBox::critical(this, title, message);
+}
+
+void SubjectManagerDialog::setSubjects(const QStringList &names)
+{
+    m_ui->listWidget->clear();
+    for (const auto &name : names) {
+        m_ui->listWidget->addItem(name);
     }
 }
 
-void SubjectManagerDialog::refreshList()
+void SubjectManagerDialog::notifySubjectsChanged()
 {
-    m_ui->listWidget->clear();
-
-    for (const auto &s : m_getAllHandler.handle({})) {
-        m_ui->listWidget->addItem(s.name);
-    }
+    emit subjectsChanged();
 }
 
 } // namespace Presentation

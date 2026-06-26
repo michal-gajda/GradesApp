@@ -1,6 +1,7 @@
 #ifndef PRESENTATION_DIALOGS_STUDENTDIALOG_H
 #define PRESENTATION_DIALOGS_STUDENTDIALOG_H
 
+#include "presentation/presenters/studentdialogpresenter.h"
 #include <QDialog>
 
 namespace Ui { class StudentDialog; }
@@ -14,7 +15,7 @@ struct StudentFormData
     QString lastName;
 };
 
-class StudentDialog : public QDialog
+class StudentDialog : public QDialog, public IStudentDialogView
 {
     Q_OBJECT
 
@@ -23,12 +24,18 @@ public:
     ~StudentDialog();
 
     StudentFormData formData() const;
+    QString albumNumber() const override;
+    QString firstName() const override;
+    QString lastName() const override;
+    void showWarning(const QString &title, const QString &message) override;
+    void acceptDialog() override;
 
 private slots:
     void onOk();
 
 private:
     Ui::StudentDialog *m_ui;
+    StudentDialogPresenter m_presenter;
 };
 
 } // namespace Presentation

@@ -58,6 +58,10 @@ target_link_libraries(Infrastructure PUBLIC Domain Qt6::Core Qt6::Sql)
 add_executable(GradesApp
     src/main.cpp
     src/presentation/models/studenttablemodel.cpp
+    src/presentation/presenters/mainwindowpresenter.cpp
+    src/presentation/presenters/studentdialogpresenter.cpp
+    src/presentation/presenters/studenteditdialogpresenter.cpp
+    src/presentation/presenters/subjectmanagerdialogpresenter.cpp
     src/presentation/windows/mainwindow.cpp
     src/presentation/dialogs/studentdialog.cpp
     src/presentation/dialogs/studenteditdialog.cpp
