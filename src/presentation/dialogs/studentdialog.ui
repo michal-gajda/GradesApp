@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>StudentDialog</class>
+ <widget class="QDialog" name="StudentDialog">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>360</width><height>200</height></rect>
+  </property>
+  <property name="minimumWidth"><number>320</number></property>
+    <property name="windowTitle"><string>Add student</string></property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing"><number>14</number></property>
+   <item>
+    <widget class="QLabel" name="labelTitle">
+    <property name="text"><string>New student</string></property>
+     <property name="font"><font><pointsize>11</pointsize><bold>true</bold></font></property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <property name="verticalSpacing"><number>8</number></property>
+     <item row="0" column="0">
+    <widget class="QLabel" name="labelAlbum"><property name="text"><string>Album no.:</string></property></widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="lineEditAlbum"/>
+     </item>
+     <item row="1" column="0">
+    <widget class="QLabel" name="labelFirstName"><property name="text"><string>First name:</string></property></widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="lineEditFirstName"/>
+     </item>
+     <item row="2" column="0">
+    <widget class="QLabel" name="labelLastName"><property name="text"><string>Last name:</string></property></widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="lineEditLastName"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
+     <item><spacer><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item>
+    <item><widget class="QPushButton" name="buttonOk"><property name="text"><string>Add</string></property><property name="default"><bool>true</bool></property></widget></item>
+    <item><widget class="QPushButton" name="buttonCancel"><property name="text"><string>Cancel</string></property></widget></item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonCancel</sender><signal>clicked()</signal>
+   <receiver>StudentDialog</receiver><slot>reject()</slot>
+   <hints><hint type="sourcelabel"><x>300</x><y>185</y></hint><hint type="destinationlabel"><x>320</x><y>200</y></hint></hints>
+  </connection>
+ </connections>
+</ui>

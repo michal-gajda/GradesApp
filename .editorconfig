@@ -1,0 +1,37 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = crlf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{c,cc,cpp,cxx,h,hpp,hxx,inl}]
+indent_style = space
+indent_size = 4
+
+[*.{ui,qrc,ts,xml}]
+indent_style = space
+indent_size = 2
+
+[CMakeLists.txt]
+indent_style = space
+indent_size = 4
+
+[*.cmake]
+indent_style = space
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+
+[*.{ps1,bat,cmd}]
+end_of_line = crlf
+
+[*.sh]
+end_of_line = lf
+
+[*.md]
+trim_trailing_whitespace = false
