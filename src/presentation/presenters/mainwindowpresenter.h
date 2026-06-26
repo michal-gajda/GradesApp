@@ -77,6 +77,6 @@ private:
     Application::GetAllSubjectsHandler &m_getAllSubjects;
 };
 
-} // namespace Presentation
+}
 
-#endif // PRESENTATION_PRESENTERS_MAINWINDOWPRESENTER_H
+#endif

@@ -64,7 +64,7 @@ private:
     StudentEditDialogPresenter m_presenter;
 };
 
-} // namespace Presentation
+}
 
-#endif // PRESENTATION_DIALOGS_STUDENTEDITDIALOG_H
+#endif
 

@@ -10,6 +10,6 @@ struct RemoveStudentCommand
     QString albumNumber;
 };
 
-} // namespace Application
+}
 
-#endif // APPLICATION_COMMANDS_REMOVESTUDENTCOMMAND__H
+#endif

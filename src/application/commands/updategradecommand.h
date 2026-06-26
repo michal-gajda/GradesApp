@@ -12,6 +12,6 @@ struct UpdateGradeCommand
     bool passed;
 };
 
-} // namespace Application
+}
 
-#endif // APPLICATION_COMMANDS_UPDATEGRADECOMMAND__H
+#endif

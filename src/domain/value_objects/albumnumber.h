@@ -29,6 +29,6 @@ private:
     QString m_value;
 };
 
-} // namespace Domain
+}
 
-#endif // DOMAIN_VALUE_OBJECTS_ALBUMNUMBER_H
+#endif

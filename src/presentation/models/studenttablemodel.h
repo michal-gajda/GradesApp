@@ -33,7 +33,7 @@ private:
     QString subjectsCsv(const Application::StudentDto &s) const;
 };
 
-} // namespace Presentation
+}
 
-#endif // PRESENTATION_MODELS_STUDENTTABLEMODEL_H
+#endif
 

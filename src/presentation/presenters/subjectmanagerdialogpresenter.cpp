@@ -92,4 +92,4 @@ void SubjectManagerDialogPresenter::refreshList()
     m_view.setSubjects(names);
 }
 
-} // namespace Presentation
+}

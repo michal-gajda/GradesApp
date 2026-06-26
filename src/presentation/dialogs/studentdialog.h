@@ -38,7 +38,7 @@ private:
     StudentDialogPresenter m_presenter;
 };
 
-} // namespace Presentation
+}
 
-#endif // PRESENTATION_DIALOGS_STUDENTDIALOG_H
+#endif
 

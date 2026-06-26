@@ -22,13 +22,11 @@ int main(int argc, char *argv[])
     app.setApplicationName("GradesApp");
     app.setOrganizationName("PW");
 
-    // ── Infrastructure ────────────────────────────────────────────────────────
     const QString dbPath = QDir::currentPath() + "/grades.db";
     Infrastructure::SqliteDatabase db(dbPath, "grades");
     Infrastructure::SqliteSubjectRepository subjectRepo(db.connectionName());
     Infrastructure::SqliteStudentRepository studentRepo(db.connectionName());
 
-    // ── Application ───────────────────────────────────────────────────────────
     Application::AddStudentHandler addStudent(studentRepo);
     Application::RemoveStudentHandler removeStudent(studentRepo);
     Application::EditStudentHandler editStudent(studentRepo);
@@ -38,7 +36,6 @@ int main(int argc, char *argv[])
     Application::GetAllStudentsHandler getAllStudents(studentRepo);
     Application::GetAllSubjectsHandler getAllSubjects(subjectRepo);
 
-    // ── Presentation ──────────────────────────────────────────────────────────
     Presentation::MainWindow window(
         addStudent, removeStudent, editStudent,
         addSubject, removeSubject, renameSubject,

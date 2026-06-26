@@ -10,6 +10,6 @@ struct AddSubjectCommand
     QString name;
 };
 
-} // namespace Application
+}
 
-#endif // APPLICATION_COMMANDS_ADDSUBJECTCOMMAND__H
+#endif

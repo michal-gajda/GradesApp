@@ -12,6 +12,6 @@ struct SubjectDto
 
 struct GetAllSubjectsQuery {};
 
-} // namespace Application
+}
 
-#endif // APPLICATION_QUERIES_GETALLSUBJECTSQUERY__H
+#endif

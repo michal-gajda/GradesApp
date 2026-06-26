@@ -52,4 +52,4 @@ void SqliteSubjectRepository::saveAll(const QVector<Domain::Subject> &subjects)
     }
 }
 
-} // namespace Infrastructure
+}

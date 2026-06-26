@@ -107,6 +107,6 @@ private:
     QVector<SubjectGrade> m_subjects;
 };
 
-} // namespace Domain
+}
 
-#endif // DOMAIN_ENTITIES_STUDENT_H
+#endif

@@ -22,6 +22,6 @@ struct StudentDto
 
 struct GetAllStudentsQuery {};
 
-} // namespace Application
+}
 
-#endif // APPLICATION_QUERIES_GETALLSTUDENTSQUERY__H
+#endif

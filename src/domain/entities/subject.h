@@ -15,6 +15,6 @@ private:
     SubjectName m_name;
 };
 
-} // namespace Domain
+}
 
-#endif // DOMAIN_ENTITIES_SUBJECT__H
+#endif

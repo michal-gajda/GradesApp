@@ -12,6 +12,6 @@ struct AddStudentCommand
     QString albumNumber;
 };
 
-} // namespace Application
+}
 
-#endif // APPLICATION_COMMANDS_ADDSTUDENTCOMMAND__H
+#endif

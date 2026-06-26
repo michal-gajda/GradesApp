@@ -164,7 +164,6 @@ QString StudentEditDialog::askItem(const QString &title,
     dialog.setComboBoxItems(items);
     dialog.setComboBoxEditable(false);
 
-    // Keep a sane minimum size on Windows to avoid geometry clamp warnings.
     const QSize minSize = dialog.minimumSizeHint().expandedTo(QSize(260, 120));
     dialog.resize(minSize);
 
@@ -177,4 +176,4 @@ void StudentEditDialog::acceptDialog()
     accept();
 }
 
-} // namespace Presentation
+}

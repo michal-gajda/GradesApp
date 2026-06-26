@@ -59,4 +59,4 @@ void StudentDialog::acceptDialog()
     accept();
 }
 
-} // namespace Presentation
+}

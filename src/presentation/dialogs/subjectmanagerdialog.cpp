@@ -71,7 +71,6 @@ QString SubjectManagerDialog::askText(const QString &title,
     dialog.setTextEchoMode(QLineEdit::Normal);
     dialog.setTextValue(defaultValue);
 
-    // Keep a sane minimum size on Windows to avoid geometry clamp warnings.
     const QSize minSize = dialog.minimumSizeHint().expandedTo(QSize(260, 120));
     dialog.resize(minSize);
 
@@ -107,4 +106,4 @@ void SubjectManagerDialog::notifySubjectsChanged()
     emit subjectsChanged();
 }
 
-} // namespace Presentation
+}

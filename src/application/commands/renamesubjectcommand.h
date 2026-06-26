@@ -11,6 +11,6 @@ struct RenameSubjectCommand
     QString newName;
 };
 
-} // namespace Application
+}
 
-#endif // APPLICATION_COMMANDS_RENAMESUBJECTCOMMAND__H
+#endif

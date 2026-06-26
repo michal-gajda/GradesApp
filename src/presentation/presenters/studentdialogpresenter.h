@@ -27,6 +27,6 @@ private:
     IStudentDialogView &m_view;
 };
 
-} // namespace Presentation
+}
 
-#endif // PRESENTATION_PRESENTERS_STUDENTDIALOGPRESENTER_H
+#endif

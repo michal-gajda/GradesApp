@@ -21,7 +21,7 @@ private:
     QString m_conn;
 };
 
-} // namespace Infrastructure
+}
 
-#endif // INFRASTRUCTURE_REPOSITORIES_SQLITESTUDENTREPOSITORY_H
+#endif
 

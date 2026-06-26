@@ -145,4 +145,4 @@ QString StudentTableModel::subjectsCsv(const Application::StudentDto &s) const
     return passed.join(", ");
 }
 
-} // namespace Presentation
+}

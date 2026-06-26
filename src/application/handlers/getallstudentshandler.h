@@ -18,7 +18,7 @@ private:
     Domain::IStudentRepository &m_sr;
 };
 
-} // namespace Application
+}
 
-#endif // APPLICATION_HANDLERS_GETALLSTUDENTSHANDLER_H
+#endif
 

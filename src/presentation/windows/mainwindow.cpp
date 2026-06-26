@@ -151,4 +151,4 @@ void MainWindow::openSubjectManagerDialog(Application::AddSubjectHandler &addSub
     dlg.exec();
 }
 
-} // namespace Presentation
+}

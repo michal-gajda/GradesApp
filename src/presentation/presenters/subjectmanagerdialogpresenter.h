@@ -52,6 +52,6 @@ private:
     Application::GetAllSubjectsHandler &m_getAllHandler;
 };
 
-} // namespace Presentation
+}
 
-#endif // PRESENTATION_PRESENTERS_SUBJECTMANAGERDIALOGPRESENTER_H
+#endif

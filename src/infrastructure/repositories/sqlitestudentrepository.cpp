@@ -126,4 +126,4 @@ void SqliteStudentRepository::saveAll(const QVector<Domain::Student> &students)
     }
 }
 
-} // namespace Infrastructure
+}

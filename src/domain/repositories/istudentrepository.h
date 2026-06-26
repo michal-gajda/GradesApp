@@ -19,6 +19,6 @@ public:
     virtual void saveAll(const QVector<Student> &students) = 0;
 };
 
-} // namespace Domain
+}
 
-#endif // DOMAIN_REPOSITORIES_ISTUDENTREPOSITORY_H
+#endif

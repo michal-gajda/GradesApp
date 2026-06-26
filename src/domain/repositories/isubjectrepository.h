@@ -14,6 +14,6 @@ public:
     virtual void saveAll(const QVector<Subject> &subjects) = 0;
 };
 
-} // namespace Domain
+}
 
-#endif // DOMAIN_REPOSITORIES_ISUBJECTREPOSITORY__H
+#endif

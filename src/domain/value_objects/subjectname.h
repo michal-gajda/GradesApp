@@ -29,7 +29,7 @@ private:
     QString m_value;
 };
 
-} // namespace Domain
+}
 
-#endif // DOMAIN_VALUE_OBJECTS_SUBJECTNAME_H
+#endif
 

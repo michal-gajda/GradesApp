@@ -65,6 +65,6 @@ private:
     QVector<Application::SubjectGradeDto> m_subjects;
 };
 
-} // namespace Presentation
+}
 
-#endif // PRESENTATION_PRESENTERS_STUDENTEDITDIALOGPRESENTER_H
+#endif

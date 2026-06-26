@@ -120,4 +120,4 @@ void MainWindowPresenter::openEditDialog(int row)
     }
 }
 
-} // namespace Presentation
+}

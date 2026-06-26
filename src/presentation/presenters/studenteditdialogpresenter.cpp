@@ -106,4 +106,4 @@ void StudentEditDialogPresenter::syncSubjectsFromList()
     }
 }
 
-} // namespace Presentation
+}

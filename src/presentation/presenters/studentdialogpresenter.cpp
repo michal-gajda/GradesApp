@@ -14,4 +14,4 @@ void StudentDialogPresenter::onOkClicked()
     m_view.acceptDialog();
 }
 
-} // namespace Presentation
+}

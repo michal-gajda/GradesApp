@@ -15,6 +15,6 @@ struct EditStudentCommand
     QVector<SubjectGradeDto> subjects;
 };
 
-} // namespace Application
+}
 
-#endif // APPLICATION_COMMANDS_EDITSTUDENTCOMMAND__H
+#endif

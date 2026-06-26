@@ -87,4 +87,4 @@ void SqliteDatabase::createSchema()
     }
 }
 
-} // namespace Infrastructure
+}

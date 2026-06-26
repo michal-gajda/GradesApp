@@ -18,7 +18,7 @@ private:
     QString m_connectionName;
 };
 
-} // namespace Infrastructure
+}
 
-#endif // INFRASTRUCTURE_REPOSITORIES_SQLITEDATABASE_H
+#endif
 

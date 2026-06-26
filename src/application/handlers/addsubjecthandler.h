@@ -17,7 +17,7 @@ private:
     Domain::ISubjectRepository &m_pr;
 };
 
-} // namespace Application
+}
 
-#endif // APPLICATION_HANDLERS_ADDSUBJECTHANDLER_H
+#endif
 

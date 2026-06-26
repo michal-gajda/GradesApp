@@ -49,6 +49,6 @@ private:
     void notifySubjectsChanged() override;
 };
 
-} // namespace Presentation
+}
 
-#endif // PRESENTATION_DIALOGS_SUBJECTMANAGERDIALOG_H
+#endif

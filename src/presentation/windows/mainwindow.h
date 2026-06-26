@@ -68,7 +68,7 @@ private:
     void connectSignals();
 };
 
-} // namespace Presentation
+}
 
-#endif // PRESENTATION_WINDOWS_MAINWINDOW_H
+#endif
 
