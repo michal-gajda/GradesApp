@@ -70,9 +70,7 @@ QString SubjectManagerDialog::askText(const QString &title,
     dialog.setLabelText(label);
     dialog.setTextEchoMode(QLineEdit::Normal);
     dialog.setTextValue(defaultValue);
-
-    const QSize minSize = dialog.minimumSizeHint().expandedTo(QSize(260, 120));
-    dialog.resize(minSize);
+    dialog.setMinimumWidth(260);
 
     ok = (dialog.exec() == QDialog::Accepted);
     return ok ? dialog.textValue() : QString();

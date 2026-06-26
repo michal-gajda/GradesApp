@@ -163,9 +163,7 @@ QString StudentEditDialog::askItem(const QString &title,
     dialog.setLabelText(label);
     dialog.setComboBoxItems(items);
     dialog.setComboBoxEditable(false);
-
-    const QSize minSize = dialog.minimumSizeHint().expandedTo(QSize(260, 120));
-    dialog.resize(minSize);
+    dialog.setMinimumWidth(260);
 
     ok = (dialog.exec() == QDialog::Accepted);
     return ok ? dialog.textValue() : QString();

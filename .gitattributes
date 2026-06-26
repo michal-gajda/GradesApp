@@ -2,24 +2,24 @@
 * text=auto
 
 # Source files
-*.c text
-*.cc text
-*.cpp text
-*.h text
-*.hpp text
-*.cmake text
-CMakeLists.txt text
+*.c text eol=lf
+*.cc text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.hpp text eol=lf
+*.cmake text eol=lf
+CMakeLists.txt text eol=lf
 
 # Scripts
 *.ps1 text eol=crlf
 *.sh text eol=lf
 
 # Project and config files
-*.md text
-*.yml text
-*.yaml text
-*.json text
-*.ui text
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.ui text eol=lf
 
 # Binary files
 *.png binary
