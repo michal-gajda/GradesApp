@@ -1,7 +1,9 @@
 #include "application/handlers/removesubjecthandler.h"
 #include <stdexcept>
+
 namespace Application {
-void RemoveSubjectHandler::handle(const RemoveSubjectCommand &cmd) {
+void RemoveSubjectHandler::handle(const RemoveSubjectCommand &cmd)
+{
     auto subjects = m_pr.findAll();
 
     if (cmd.subjectIndex < 0 || cmd.subjectIndex >= subjects.size()) {

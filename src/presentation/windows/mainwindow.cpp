@@ -39,7 +39,10 @@ MainWindow::MainWindow(Application::AddStudentHandler &addStudent,
     m_presenter.initialize();
 }
 
-MainWindow::~MainWindow() { delete m_ui; }
+MainWindow::~MainWindow()
+{
+    delete m_ui;
+}
 
 void MainWindow::setupTable()
 {

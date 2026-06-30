@@ -1,7 +1,9 @@
 #include "application/handlers/updategradehandler.h"
 #include <stdexcept>
+
 namespace Application {
-void UpdateGradeHandler::handle(const UpdateGradeCommand &cmd) {
+void UpdateGradeHandler::handle(const UpdateGradeCommand &cmd)
+{
     auto ms = m_sr.findByAlbumNumber(Domain::AlbumNumber(cmd.albumNumber));
 
     if (!ms) {

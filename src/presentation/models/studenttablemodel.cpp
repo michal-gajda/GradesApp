@@ -3,7 +3,9 @@
 
 namespace Presentation {
 
-StudentTableModel::StudentTableModel(QObject *parent) : QAbstractTableModel(parent) {}
+StudentTableModel::StudentTableModel(QObject *parent)
+    : QAbstractTableModel(parent)
+{}
 
 void StudentTableModel::reset(const QVector<Application::StudentDto> &students)
 {

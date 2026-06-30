@@ -9,7 +9,8 @@ namespace Application {
 class UpdateGradeHandler {
 public:
     explicit UpdateGradeHandler(Domain::IStudentRepository &sr)
-            : m_sr(sr) {}
+        : m_sr(sr)
+    {}
 
     void handle(const UpdateGradeCommand &cmd);
 

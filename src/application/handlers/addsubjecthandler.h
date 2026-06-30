@@ -9,7 +9,8 @@ namespace Application {
 class AddSubjectHandler {
 public:
     explicit AddSubjectHandler(Domain::ISubjectRepository &pr)
-            : m_pr(pr) {}
+        : m_pr(pr)
+    {}
 
     void handle(const AddSubjectCommand &cmd);
 

@@ -22,7 +22,10 @@ StudentDialog::StudentDialog(QWidget *parent)
     connect(m_ui->buttonOk, &QPushButton::clicked, this, &StudentDialog::onOk);
 }
 
-StudentDialog::~StudentDialog() { delete m_ui; }
+StudentDialog::~StudentDialog()
+{
+    delete m_ui;
+}
 
 StudentFormData StudentDialog::formData() const
 {

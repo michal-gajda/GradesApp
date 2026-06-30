@@ -1,7 +1,9 @@
 #include "application/handlers/renamesubjecthandler.h"
 #include <stdexcept>
+
 namespace Application {
-void RenameSubjectHandler::handle(const RenameSubjectCommand &cmd) {
+void RenameSubjectHandler::handle(const RenameSubjectCommand &cmd)
+{
     auto subjects = m_pr.findAll();
 
     if (cmd.subjectIndex < 0 || cmd.subjectIndex >= subjects.size()) {

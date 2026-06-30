@@ -9,7 +9,8 @@ namespace Application {
 class EditStudentHandler {
 public:
     explicit EditStudentHandler(Domain::IStudentRepository &sr)
-            : m_sr(sr) {}
+        : m_sr(sr)
+    {}
 
     void handle(const EditStudentCommand &cmd);
 

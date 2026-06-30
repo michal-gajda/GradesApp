@@ -9,7 +9,8 @@ namespace Application {
 class RemoveStudentHandler {
 public:
     explicit RemoveStudentHandler(Domain::IStudentRepository &sr)
-            : m_sr(sr) {}
+        : m_sr(sr)
+    {}
 
     void handle(const RemoveStudentCommand &cmd);
 

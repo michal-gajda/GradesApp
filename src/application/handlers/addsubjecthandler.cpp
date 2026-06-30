@@ -1,8 +1,10 @@
 #include "application/handlers/addsubjecthandler.h"
 #include "domain/entities/subject.h"
 #include <stdexcept>
+
 namespace Application {
-void AddSubjectHandler::handle(const AddSubjectCommand &cmd) {
+void AddSubjectHandler::handle(const AddSubjectCommand &cmd)
+{
     auto subjects = m_pr.findAll();
 
     for (const auto &subject : subjects) {

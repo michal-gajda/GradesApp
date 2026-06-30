@@ -10,7 +10,8 @@ namespace Application {
 class GetAllSubjectsHandler {
 public:
     explicit GetAllSubjectsHandler(Domain::ISubjectRepository &pr)
-            : m_pr(pr) {}
+        : m_pr(pr)
+    {}
 
     QVector<SubjectDto> handle(const GetAllSubjectsQuery &) const;
 

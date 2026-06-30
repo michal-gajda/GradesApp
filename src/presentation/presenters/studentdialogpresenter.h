@@ -19,7 +19,9 @@ public:
 class StudentDialogPresenter
 {
 public:
-    explicit StudentDialogPresenter(IStudentDialogView &view) : m_view(view) {}
+    explicit StudentDialogPresenter(IStudentDialogView &view)
+        : m_view(view)
+    {}
 
     void onOkClicked();
 

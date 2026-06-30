@@ -9,7 +9,8 @@ namespace Application {
 class AddStudentHandler {
 public:
     explicit AddStudentHandler(Domain::IStudentRepository &sr)
-            : m_sr(sr) {}
+        : m_sr(sr)
+    {}
 
     void handle(const AddStudentCommand &cmd);
 

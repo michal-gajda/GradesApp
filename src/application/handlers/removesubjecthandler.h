@@ -10,7 +10,9 @@ namespace Application {
 class RemoveSubjectHandler {
 public:
     RemoveSubjectHandler(Domain::ISubjectRepository &pr, Domain::IStudentRepository &sr)
-            : m_pr(pr), m_sr(sr) {}
+        : m_pr(pr)
+        , m_sr(sr)
+    {}
 
     void handle(const RemoveSubjectCommand &cmd);
 

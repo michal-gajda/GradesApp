@@ -15,7 +15,8 @@ static void check(const QSqlQuery &q, const char *ctx)
 }
 
 SqliteStudentRepository::SqliteStudentRepository(const QString &connectionName)
-    : m_conn(connectionName) {}
+    : m_conn(connectionName)
+{}
 
 QVector<Domain::Student> SqliteStudentRepository::findAll() const
 {
@@ -26,11 +27,10 @@ QVector<Domain::Student> SqliteStudentRepository::findAll() const
 
     QVector<Domain::Student> result;
 
-    while (q.next()){
+    while (q.next()) {
         int id = q.value(0).toInt();
 
-        try
-        {
+        try {
             Domain::Student s(q.value(1).toString(), q.value(2).toString(),
                             Domain::AlbumNumber(q.value(3).toString()));
             QSqlQuery gq(db);
@@ -39,13 +39,12 @@ QVector<Domain::Student> SqliteStudentRepository::findAll() const
             gq.exec();
             check(gq, "findAll grades");
 
-            while (gq.next())
-            {
+            while (gq.next()) {
                 s.addSubject(gq.value(0).toString(), gq.value(1).toBool());
             }
             result.append(s);
+        } catch (...) {
         }
-        catch (...) {}
     }
 
     return result;
@@ -53,7 +52,7 @@ QVector<Domain::Student> SqliteStudentRepository::findAll() const
 
 std::optional<Domain::Student> SqliteStudentRepository::findByAlbumNumber(const Domain::AlbumNumber &a) const
 {
-    for (const auto &s : findAll()){
+    for (const auto &s : findAll()) {
         if (s.albumNumber() == a) {
             return s;
         }
@@ -77,20 +76,25 @@ void SqliteStudentRepository::save(const Domain::Student &student)
 
     q.prepare("SELECT id FROM students WHERE album_number=:a");
     q.bindValue(":a", student.albumNumber().value());
-    q.exec(); check(q, "save id lookup"); q.next();
+    q.exec();
+    check(q, "save id lookup");
+    q.next();
     int sid = q.value(0).toInt();
 
     q.prepare("DELETE FROM grades WHERE student_id=:id");
-    q.bindValue(":id", sid); q.exec(); check(q, "save delete grades");
+    q.bindValue(":id", sid);
+    q.exec();
+    check(q, "save delete grades");
 
-        const auto &subjects = student.subjects();
+    const auto &subjects = student.subjects();
 
-        for (const auto &subject : subjects) {
-            q.prepare("INSERT INTO grades (student_id, subject_name, passed) VALUES (:s,:n,:p)");
-            q.bindValue(":s", sid);
-            q.bindValue(":n", subject.name);
-            q.bindValue(":p", subject.passed ? 1 : 0);
-        q.exec(); check(q, "save insert grade");
+    for (const auto &subject : subjects) {
+        q.prepare("INSERT INTO grades (student_id, subject_name, passed) VALUES (:s,:n,:p)");
+        q.bindValue(":s", sid);
+        q.bindValue(":n", subject.name);
+        q.bindValue(":p", subject.passed ? 1 : 0);
+        q.exec();
+        check(q, "save insert grade");
     }
 }
 
@@ -99,7 +103,9 @@ void SqliteStudentRepository::remove(const Domain::AlbumNumber &albumNumber)
     QSqlDatabase db = QSqlDatabase::database(m_conn);
     QSqlQuery q(db);
     q.prepare("SELECT id FROM students WHERE album_number=:a");
-    q.bindValue(":a", albumNumber.value()); q.exec(); check(q, "remove id lookup");
+    q.bindValue(":a", albumNumber.value());
+    q.exec();
+    check(q, "remove id lookup");
 
     if (!q.next()) {
         return;
@@ -108,10 +114,14 @@ void SqliteStudentRepository::remove(const Domain::AlbumNumber &albumNumber)
     int sid = q.value(0).toInt();
 
     q.prepare("DELETE FROM grades WHERE student_id=:id");
-    q.bindValue(":id", sid); q.exec(); check(q, "remove grades");
+    q.bindValue(":id", sid);
+    q.exec();
+    check(q, "remove grades");
 
     q.prepare("DELETE FROM students WHERE id=:id");
-    q.bindValue(":id", sid); q.exec(); check(q, "remove student");
+    q.bindValue(":id", sid);
+    q.exec();
+    check(q, "remove student");
 }
 
 void SqliteStudentRepository::saveAll(const QVector<Domain::Student> &students)

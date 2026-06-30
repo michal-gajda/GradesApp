@@ -10,7 +10,8 @@ namespace Application {
 class GetAllStudentsHandler {
 public:
     explicit GetAllStudentsHandler(Domain::IStudentRepository &sr)
-            : m_sr(sr) {}
+        : m_sr(sr)
+    {}
 
     QVector<StudentDto> handle(const GetAllStudentsQuery &) const;
 

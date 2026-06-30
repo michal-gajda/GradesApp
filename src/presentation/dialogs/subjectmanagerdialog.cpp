@@ -32,7 +32,10 @@ SubjectManagerDialog::SubjectManagerDialog(Application::AddSubjectHandler &addHa
     m_presenter.initialize();
 }
 
-SubjectManagerDialog::~SubjectManagerDialog() { delete m_ui; }
+SubjectManagerDialog::~SubjectManagerDialog()
+{
+    delete m_ui;
+}
 
 void SubjectManagerDialog::onAdd()
 {

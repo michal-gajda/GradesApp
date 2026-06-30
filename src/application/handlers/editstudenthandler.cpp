@@ -1,7 +1,9 @@
 #include "application/handlers/editstudenthandler.h"
 #include <stdexcept>
+
 namespace Application {
-void EditStudentHandler::handle(const EditStudentCommand &cmd) {
+void EditStudentHandler::handle(const EditStudentCommand &cmd)
+{
     auto ms = m_sr.findByAlbumNumber(Domain::AlbumNumber(cmd.albumNumber));
 
     if (!ms) {

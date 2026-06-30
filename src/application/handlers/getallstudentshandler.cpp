@@ -1,6 +1,8 @@
 #include "application/handlers/getallstudentshandler.h"
+
 namespace Application {
-QVector<StudentDto> GetAllStudentsHandler::handle(const GetAllStudentsQuery &) const {
+QVector<StudentDto> GetAllStudentsHandler::handle(const GetAllStudentsQuery &) const
+{
     QVector<StudentDto> result;
 
     for (const auto &s : m_sr.findAll()) {

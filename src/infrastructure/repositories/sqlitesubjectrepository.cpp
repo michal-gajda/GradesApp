@@ -14,7 +14,8 @@ static void check(const QSqlQuery &q, const char *ctx)
 }
 
 SqliteSubjectRepository::SqliteSubjectRepository(const QString &connectionName)
-    : m_conn(connectionName) {}
+    : m_conn(connectionName)
+{}
 
 QVector<Domain::Subject> SqliteSubjectRepository::findAll() const
 {
@@ -25,8 +26,7 @@ QVector<Domain::Subject> SqliteSubjectRepository::findAll() const
 
     QVector<Domain::Subject> result;
 
-    while (q.next())
-    {
+    while (q.next()) {
         try {
             result.append(Domain::Subject(Domain::SubjectName(q.value(0).toString())));
         } catch (...) {
@@ -42,8 +42,7 @@ void SqliteSubjectRepository::saveAll(const QVector<Domain::Subject> &subjects)
     q.exec("DELETE FROM subjects");
     check(q, "saveAll delete subjects");
 
-    for (int i = 0; i < subjects.size(); ++i)
-    {
+    for (int i = 0; i < subjects.size(); ++i) {
         q.prepare("INSERT INTO subjects (name, position) VALUES (:n, :p)");
         q.bindValue(":n", subjects[i].name().value());
         q.bindValue(":p", i);
