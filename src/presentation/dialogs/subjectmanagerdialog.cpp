@@ -71,6 +71,7 @@ QString SubjectManagerDialog::askText(const QString &title,
     dialog.setTextEchoMode(QLineEdit::Normal);
     dialog.setTextValue(defaultValue);
     dialog.setMinimumWidth(260);
+    dialog.adjustSize();
 
     ok = (dialog.exec() == QDialog::Accepted);
     return ok ? dialog.textValue() : QString();
